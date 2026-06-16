@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-section">
+    <header class="page-section__header">
+        <p class="eyebrow">Face Registry</p>
+        <h1>얼굴 등록 페이지이다.</h1>
+        <p class="subtext">
+            이곳에서 등록한 얼굴은 실습실 Mozik AI 서버의 얼굴 데이터베이스에 저장되어,
+            이후 분석 요청에서 자동 매칭에 사용되는 프로필이다.
+        </p>
+    </header>
+
+    <div class="card">
+        <form action="{{ url_for('register_face') }}" method="post" enctype="multipart/form-data" class="form">
+            <div class="form__field">
+                <label for="name">이름이다.</label>
+                <input type="text" id="name" name="name" placeholder="예: 이소빈" required>
+            </div>
+
+            <div class="form__field">
+                <label for="file">등록할 얼굴 이미지 파일이다.</label>
+                <input type="file" id="file" name="file" accept="image/*" required>
+                <p class="form__hint">정면에 가깝고, 얼굴이 크게 나온 사진이 인식 정확도가 높음이다.</p>
+            </div>
+
+            <div class="form__actions">
+                <button type="submit" class="btn btn-primary">등록하기</button>
+                <a href="{{ url_for('analyze') }}" class="btn btn-ghost">분석 페이지로 이동하기</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

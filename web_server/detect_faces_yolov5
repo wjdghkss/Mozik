@@ -1,0 +1,39 @@
+def detect_faces_yolov5(
+    frame_bgr,
+    model=None,
+    conf_thres: float = 0.5,
+    target_class: Optional[int] = None
+) -> List[Tuple[int, int, int, int]]:
+    """
+    frame_bgr: OpenCV에서 읽은 BGR 프레임이다.
+    model: load_yolov5()로 로드한 모델, None이면 내부 캐시를 사용한다.
+    conf_thres: confidence threshold
+    target_class: 특정 class id만 모자이크하고 싶을 때 (예: face class)
+    """
+    global _YOLOV5_MODEL
+    if model is None:
+        if _YOLOV5_MODEL is None:
+            # 필요 시 자동 로드
+            _YOLOV5_MODEL = load_yolov5()
+        model = _YOLOV5_MODEL
+
+    # YOLOv5는 BGR/RGB 둘 다 크게 상관없지만
+    # 일단 BGR 그대로 넣어도 동작한다.
+    results = model(frame_bgr, size=640)
+
+    # results.xyxy[0]: [N, 6] → x1, y1, x2, y2, conf, cls
+    det = results.xyxy[0].cpu().numpy()
+
+    rects: List[Tuple[int, int, int, int]] = []
+
+    for x1, y1, x2, y2, conf, cls in det:
+        if conf < conf_thres:
+            continue
+        if target_class is not None and int(cls) != target_class:
+            continue
+
+        w = x2 - x1
+        h = y2 - y1
+        rects.append((int(x1), int(y1), int(w), int(h)))
+
+    return rects

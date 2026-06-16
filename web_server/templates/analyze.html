@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-section">
+    <header class="page-section__header">
+        <p class="eyebrow">Analyze</p>
+        <h1>얼굴 분석 페이지이다.</h1>
+        <p class="subtext">
+            이미지를 업로드하면 KT cloud 웹 서버에서 역터널을 통해
+            실습실 Mozik AI API의 <code>/api/detect/face</code> 엔드포인트로 전송하여
+            얼굴 탐지 및 매칭을 수행한다.
+        </p>
+    </header>
+
+    <div class="card">
+        <form action="{{ url_for('analyze') }}" method="post" enctype="multipart/form-data" class="form">
+            <div class="form__field">
+                <label for="file">분석할 이미지 파일이다.</label>
+                <input type="file" id="file" name="file" accept="image/*" required>
+                <p class="form__hint">
+                    여러 사람이 있는 사진을 넣으면, 등록된 얼굴과의 매칭 결과가 리스트로 반환됨이다.
+                </p>
+            </div>
+
+            <div class="form__actions">
+                <button type="submit" class="btn btn-primary">분석하기</button>
+                <a href="{{ url_for('register_face') }}" class="btn btn-ghost">얼굴 등록하러 가기</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

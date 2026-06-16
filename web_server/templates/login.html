@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block body_class %}layout-default auth-page{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+    <article class="auth-card">
+        <div class="auth-card__badge">Welcome back</div>
+        <h2>다시 만나요 👋</h2>
+        <p>모자이크 작업을 이어가려면 계정으로 로그인하세요.</p>
+
+        {% if error %}
+        <div class="auth-alert error">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form class="auth-form" method="POST">
+            <div class="auth-field">
+                <label for="email">이메일</label>
+                <input id="email" name="email" type="email" placeholder="you@example.com" required autofocus>
+            </div>
+            <div class="auth-field">
+                <label for="password">비밀번호</label>
+                <input id="password" name="password" type="password" placeholder="비밀번호" required>
+            </div>
+            <button class="auth-btn" type="submit">로그인</button>
+        </form>
+
+        <p class="auth-secondary">
+            아직 계정이 없나요?
+            <a href="{{ url_for('signup') }}">회원가입 바로가기</a>
+            <br>
+            <a href="{{ url_for('forgot_password') }}">비밀번호를 잊으셨나요?</a>
+        </p>
+    </article>
+</section>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-section">
+    <header class="page-section__header">
+        <p class="eyebrow">Result</p>
+        <h1>처리 결과 페이지이다.</h1>
+        <p class="subtext">
+            업로드한 사진 또는 영상에 대해 모자이크 처리가 완료된 결과와,
+            필요한 경우 Mozik AI 서버에서 반환한 분석 정보를 함께 보여주는 페이지이다.
+        </p>
+    </header>
+
+    {# 1. 모자이크된 미디어(이미지/영상) 표시 영역이다. #}
+    {% if image_url is defined %}
+    <div class="card">
+        <h2>모자이크 적용 결과이다.</h2>
+        <p class="form__hint">
+            아래 미리보기는 서버에 저장된 결과 파일을 불러온 것이며,
+            다운로드를 통해 원본 해상도로 확인할 수 있다.
+        </p>
+
+        <div class="result-media">
+            {% if media_type == "image" %}
+                <img src="{{ image_url }}"
+                     alt="모자이크 결과 이미지"
+                     style="max-width: 100%; height: auto; border-radius: 12px;">
+            {% elif media_type == "video" %}
+                <video controls
+                       style="max-width: 100%; border-radius: 12px;">
+                    <source src="{{ image_url }}" type="video/mp4">
+                    브라우저가 동영상을 재생할 수 없으면 파일을 직접 다운로드해서 확인하면 된다.
+                </video>
+            {% else %}
+                <p>지원하지 않는 미디어 타입이거나 타입 정보가 전달되지 않았음이다.</p>
+            {% endif %}
+        </div>
+
+        <div style="margin-top: 16px;">
+            <a href="{{ image_url }}" class="btn btn-primary" download>결과 파일 다운로드</a>
+            <a href="{{ url_for('upload') }}" class="btn btn-ghost">다른 파일 업로드하기</a>
+        </div>
+    </div>
+    {% endif %}
+
+    {# 2. 분석 JSON 결과(예전 analyze 플로우)를 표시하는 영역이다. #}
+    {% if result is defined %}
+    <div class="card" style="margin-top: 24px;">
+        {% if result.success %}
+            <h2>얼굴 분석 결과 요약이다.</h2>
+            <p>탐지된 얼굴 개수는 <strong>{{ result.count }}</strong>개이다.</p>
+
+            {% if result.matches %}
+                <ul class="result-list">
+                    {% for item in result.matches %}
+                        <li>
+                            <strong>{{ item.name }}</strong> –
+                            유사도 {{ (item.score * 100) | round(1) }}%
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>등록된 얼굴과 매칭되는 결과가 없었음이다.</p>
+            {% endif %}
+        {% else %}
+            <h2>분석 실패임이다.</h2>
+            <p>사유: {{ result.message or "알 수 없는 오류이다." }}</p>
+        {% endif %}
+    </div>
+
+    <div class="card" style="margin-top: 24px;">
+        <h2>원본 응답(JSON)이다.</h2>
+        <pre class="json-box">{{ result | tojson(indent=2) }}</pre>
+    </div>
+
+    <div style="margin-top: 16px;">
+        <a href="{{ url_for('analyze') }}" class="btn btn-primary">다른 이미지 분석하기</a>
+        <a href="{{ url_for('register_face') }}" class="btn btn-ghost">얼굴 등록 페이지로 이동</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

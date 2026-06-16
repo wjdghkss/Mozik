@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="upload-hero">
+    <div>
+        <p class="eyebrow">Workspace</p>
+        <h1>이미지를 불러오고<br>몇 가지 옵션만 선택하세요.</h1>
+        <p class="subtext">
+            모자이크 처리 강도와 탐지 방식을 조절하고, 제외 프레임을 직접 선택할 수 있어요.
+            실제 처리 결과는 오른쪽 미리보기에서 확인하게 됩니다.
+        </p>
+    </div>
+</section>
+
+<section class="upload-workspace">
+    <aside class="control-panel">
+        <form method="POST" enctype="multipart/form-data" class="upload-form">
+            <div class="panel-group">
+                <label class="panel-label">① 파일 불러오기</label>
+                <label class="file-drop">
+                    <input type="file" name="file" required>
+                    <span>파일 선택 또는 드래그</span>
+                </label>
+            </div>
+
+            <div class="panel-group">
+                <label class="panel-label">② 블러 강도</label>
+                <div class="blur-control" style="display:flex; align-items:center; gap:10px;">
+
+                    <!-- 슬라이더 -->
+                    <input
+                        type="range"
+                        id="blurRange"
+                        name="blur_strength"
+                        min="0"
+                        max="100"
+                        value="0"
+                        oninput="blurValue.value = this.value"
+                    >
+                    <input
+                        type="number"
+                        id="blurValue"
+                        min="0"
+                        max="100"
+                        value="0"
+                        style="width:60px; padding:4px; font-size:16px;"
+                        oninput="blurRange.value = this.value"
+                    >
+                </div>
+            </div>
+
+
+            <div class="panel-group toggles">
+                <label class="panel-label">③ 자동 탐지 옵션</label>
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span>자동 얼굴 모자이크</span>
+                </label>
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span>전체 프레임 자동 탐지</span>
+                </label>
+                <label class="toggle">
+                    <input type="checkbox">
+                    <span>탐지된 얼굴만 적용</span>
+                </label>
+            </div>
+
+            <div class="panel-group">
+                <div class="panel-label-row">
+                    <label class="panel-label">④ 탐지된 얼굴 (현재 프레임)</label>
+                    <div class="face-controls">
+                        <button type="button" class="face-control-btn">모두 선택</button>
+                        <button type="button" class="face-control-btn">모두 해제</button>
+                    </div>
+                </div>
+                <div class="face-grid">
+                    <div class="face-card placeholder">
+                        <div class="face-thumb"></div>
+                        <div class="face-info">
+                            <span class="face-label">Face 1</span>
+                            <p>탐지된 얼굴이 여기에 표시됩니다.</p>
+                        </div>
+                        <button type="button" class="face-exclude-btn">이 얼굴 전체 제외</button>
+                    </div>
+                    <div class="face-card placeholder">
+                        <div class="face-thumb"></div>
+                        <div class="face-info">
+                            <span class="face-label">Face 2</span>
+                            <p>파일을 선택하면 목록이 채워집니다.</p>
+                        </div>
+                        <button type="button" class="face-exclude-btn">이 얼굴 전체 제외</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-group">
+                <label class="panel-label">⑤ 모자이크 제외 대상(영상 전체)</label>
+                <div class="exclude-panel">
+                    <div class="exclude-list">
+                        <p class="exclude-empty">현재 제외된 대상 없음</p>
+                    </div>
+                    <div class="exclude-actions">
+                        <button type="button" class="exclude-btn">선택 삭제</button>
+                        <button type="button" class="exclude-btn">전체 삭제</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-group actions">
+                <button type="submit" class="primary">모자이크 적용</button>
+                <button type="reset" class="ghost">초기화</button>
+            </div>
+        </form>
+    </aside>
+
+    <section class="preview-panel">
+        <header>
+            <div>
+                <p class="eyebrow">Preview</p>
+                <h3>모자이크 결과 미리보기</h3>
+            </div>
+            <div class="preview-actions">
+                <button type="button">재생</button>
+                <button type="button">정지</button>
+            </div>
+        </header>
+        <div class="preview-stage">
+            <p>파일을 업로드하면 미리보기가 여기에 표시됩니다.</p>
+        </div>
+    </section>
+</section>
+{% endblock %}
